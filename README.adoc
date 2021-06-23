@@ -1,0 +1,107 @@
+= Irritator
+Gauthier Quesnel <gauthier.quesnel@inrae.fr>
+v0.1.0, 2021-xx-xx
+:toc:
+:homepage: https://github.com/quesnel/irritator/
+
+image:https://github.com/vle-forge/irritator/actions/workflows/linux.yml/badge.svg[Linux, link=https://github.com/vle-forge/irritator/actions/workflows/linux.yml]
+image:https://github.com/vle-forge/irritator/actions/workflows/macos.yml/badge.svg[MacOS, link=https://github.com/vle-forge/irritator/actions/workflows/macos.yml]
+image:https://github.com/vle-forge/irritator/actions/workflows/windows.yml/badge.svg[Windows, link=https://github.com/vle-forge/irritator/actions/workflows/windows.yml]
+
+Copyright © 2021 http://www.inrae.fr/en[INRA]
+
+The software is released under the https://www.boost.org/LICENSE_1_0.txt[Boost license]. See the LICENSE file.
+
+== Requirements and recommended
+
+Irritator works for Linux, Windows and MacOS.
+
+* `cmake` (≥ 3.11)
+* $$C++$$ compiler with $$C++20$$ support:
+** `gcc` ≥ 8 (https://www.gnu.org/software/gcc/projects/cxx-status.html[notes])
+** `clang` ≥ 9 (https://clang.llvm.org/cxx_status.html[notes])
+** `visual studio 2019 16.0` (https://docs.microsoft.com/en-us/visualstudio/releasenotes/vs2017-relnotes[notes])
+** `Xcode 12` (https://apps.apple.com/app/xcode[notes])
+
+=== Linux
+
+Install the glfw3 and OpenGL libraries. On Debian GNU/Linux and Ubuntu derivatives.
+
+[source,bash]
+....
+apt-get install build-essential cmake libglew2 libglew-dev libglfw3-dev libglx0 libopengl0 libgl1-mesa-dev
+....
+
+=== Windows
+
+Install (https://visualstudio.microsoft.com/[Visual Studio 2019]) with `cmake`
+support  then open the Irrirator source directory and build.
+
+=== MacOS
+
+Install (https://apps.apple.com/app/xcode[Xcode 12]) and Xcode Command Line
+Tools via the command `xcode-select --install` in terminal.  Then using
+(https://brew.sh[Homebrew]), install `cmake`, `glew` and `glfw` the OpenGL
+dependencies. 
+
+== First installation
+
+First, we clone Irritator git repository and the submodule:
+
+* from https://github.com/vle-forge/irritator[Github]:
+
+....
+git clone https://github.com/vle-forge/irritator.git
+cd irritator
+git submodule update --init --recursive
+....
+
+* from https://forgemia.inra.fr/gauthier.quesnel/irritator[ForgeMIA]:
+
+....
+git clone https://forgemia.inra.fr/gauthier.quesnel/irritator.git
+cd irritator
+git submodule update --init --recursive
+....
+
+* build
+
+[source,bash]
+....
+cmake -B build
+cd build
+make
+make install
+....
+
+* start the GUI
+
+[source,bash]
+....
+./app/gui/irritator-0.1
+....
+
+== File format
+
+Simple file
+
+[source]
+''''
+2                                    # Number of constant source generator
+0 10 1 2 3 4 5 6 7 8 9 10            # The first constant generator with id: 0 have ten values
+1 5 0 0 1 1 2                        # The second constant generator with id: 1 have five values
+0                                    # Number of binary file source generator
+1                                    # Number of text file source generator
+0 "data/big-random-data.dat"         # The only text file generator with id: 0 with a relative file (relative to the irt file).
+1                                    # Number of random source generator
+0 normal 0.5 0.1                     # The only random source generator with id: 0 with a normal law and two parameters 0.5 and 0.1 for mean and standard deviation
+4                                    # 4 models will be allocated
+0 15.0 17.0 generator 2 0.0 100.0 0  # Model 0, in position x = 15.0 y = 17.0, is a generator with one double real message
+1 12.0 5.0 generator 2 0.0 100.0 0   # Model 1, in position x = 12.0 y = 5.0, is a generator with one double real message
+2 -5.0 0.0 adder_2 2 1.0 1.0 0       # Model 2, in position x = -5.0 y = 0.0, is a adder_2 with one double real message
+3 0.0 1.0 counter 1 0.0 0            # Model 3, in position x = 12.0 y = 1.0, is a counter with one real message
+3                                    # 3 internal connections
+0 0 2 0                              # Model 'A' output port '0' connected to model 'Add' input port '0'
+1 0 2 1                              # Model 'A' output port '0' connected to model 'Add' input port '0'
+2 0 3 0                              # Model 'Add' output port '0' connected to model 'C' input port '0'
+''''
